@@ -1,5 +1,3 @@
-
-
 local UserInputService = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
@@ -35,6 +33,7 @@ local Success, Response = pcall(function()
 end)
 
 if not Success then
+	warn("\nOrion Library - Failed to load Feather Icons. Error code: " .. Response .. "\n")
 end	
 
 local function GetIcon(IconName)
@@ -430,53 +429,22 @@ function OrionLib:MakeNotification(NotificationConfig)
 			})
 		})
 
-		local TweenService = game:GetService("TweenService")
+		TweenService:Create(NotificationFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {Position = UDim2.new(0, 0, 0, 0)}):Play()
 
--- التأكد من أن الإشعار موجود
-if not NotificationFrame or not NotificationFrame.Parent then
-    return -- إيقاف التنفيذ إذا لم يكن موجودًا
-end
+		wait(NotificationConfig.Time - 0.88)
+		TweenService:Create(NotificationFrame.Icon, TweenInfo.new(0.4, Enum.EasingStyle.Quint), {ImageTransparency = 1}):Play()
+		TweenService:Create(NotificationFrame, TweenInfo.new(0.8, Enum.EasingStyle.Quint), {BackgroundTransparency = 0.6}):Play()
+		wait(0.3)
+		TweenService:Create(NotificationFrame.UIStroke, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {Transparency = 0.9}):Play()
+		TweenService:Create(NotificationFrame.Title, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {TextTransparency = 0.4}):Play()
+		TweenService:Create(NotificationFrame.Content, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {TextTransparency = 0.5}):Play()
+		wait(0.05)
 
--- جلب العناصر مع التأكد من وجودها
-local icon = NotificationFrame:FindFirstChild("Icon")
-local uiStroke = NotificationFrame:FindFirstChild("UIStroke")
-local title = NotificationFrame:FindFirstChild("Title")
-local content = NotificationFrame:FindFirstChild("Content")
-
--- تحريك الإشعار ليظهر
-TweenService:Create(NotificationFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quint), {Position = UDim2.new(0, 0, 0, 0)}):Play()
-
--- الانتظار لمدة الإشعار
-wait(NotificationConfig.Time - 0.88)
-
--- تطبيق التأثيرات على العناصر **فقط إذا كانت موجودة**
-if icon then
-    TweenService:Create(icon, TweenInfo.new(0.4, Enum.EasingStyle.Quint), {ImageTransparency = 1}):Play()
-end
-TweenService:Create(NotificationFrame, TweenInfo.new(0.8, Enum.EasingStyle.Quint), {BackgroundTransparency = 0.6}):Play()
-wait(0.3)
-
-if uiStroke then
-    TweenService:Create(uiStroke, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {Transparency = 0.9}):Play()
-end
-if title then
-    TweenService:Create(title, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {TextTransparency = 0.4}):Play()
-end
-if content then
-    TweenService:Create(content, TweenInfo.new(0.6, Enum.EasingStyle.Quint), {TextTransparency = 0.5}):Play()
-end
-
-wait(0.05)
-
--- تحريك الإشعار للخارج **فقط إذا لم يُحذف**
-if NotificationFrame and NotificationFrame.Parent then
-    NotificationFrame:TweenPosition(UDim2.new(1, 20, 0, 0), 'In', 'Quint', 0.8, true)
-    wait(1.35)
-    if NotificationFrame and NotificationFrame.Parent then
-        NotificationFrame:Destroy() -- حذف الإشعار بعد انتهاء التوين
-    end
-end
-
+		NotificationFrame:TweenPosition(UDim2.new(1, 20, 0, 0),'In','Quint',0.8,true)
+		wait(1.35)
+		NotificationFrame:Destroy()
+	end)
+end    
 
 function OrionLib:Init()
 	if OrionLib.SaveCfg then	
